@@ -4,11 +4,18 @@ use std::{
     net::{TcpListener, TcpStream},
     thread,
     time::Duration,
+    env
 };
 use hello::ThreadPool;
 
 fn main() {
-    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+    let mut args = env::args();
+    args.next();
+    let ip_addr = args.next().unwrap();
+
+    let listener = TcpListener::bind(ip_addr).unwrap();
+    println!("addr: {}", listener.local_addr().unwrap());
+
     let pool = ThreadPool::new(4);
 
     for stream in listener.incoming() {
